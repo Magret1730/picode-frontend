@@ -47,15 +47,8 @@ export function CodePlayground({
   async function submit() {
     setSubmitting(true);
     try {
-      // MVP: mock results (friendly + kid-safe). Later: call backend /submissions/run-tests.
-      const mocked: TestResult[] = requirements.map((r, idx) => ({
-        name: r,
-        passed: idx % 3 !== 0,
-        message:
-          idx % 3 !== 0
-            ? "Great job! You did it."
-            : "Almost there! Try adding or fixing this part.",
-      }));
+      // MVP: local, safe DOM-based checks (no random failures).
+      const mocked: TestResult[] = runMvpChecks(code, requirements);
       await new Promise((r) => setTimeout(r, 500));
       setResults(mocked);
     } finally {
@@ -194,5 +187,76 @@ export function CodePlayground({
       </Card>
     </div>
   );
+}
+
+function runMvpChecks(submittedCode: string, requirements: string[]): TestResult[] {
+  const doc = parseHtmlForChecks(submittedCode);
+
+  function has(sel: string) {
+    return Boolean(doc.querySelector(sel));
+  }
+  function hasAttr(sel: string, attr: string) {
+    const el = doc.querySelector(sel);
+    return Boolean(el?.getAttribute(attr)?.trim());
+  }
+  function textNotEmpty(sel: string) {
+    const el = doc.querySelector(sel);
+    return Boolean((el?.textContent ?? "").trim());
+  }
+  function bodyNotEmpty() {
+    return Boolean((doc.body?.textContent ?? "").trim());
+  }
+
+  return requirements.map((r) => {
+    const key = r.toLowerCase();
+
+    // Map the common Picode MVP requirements to DOM checks.
+    const check =
+      key.includes("title") ? { ok: has("title") || doc.title.trim().length > 0, name: "Page title" } :
+      key.includes("main heading") || key.includes("(h1)") || key.includes("heading (h1)") || key.includes("one main heading") || key.includes("add a heading")
+        ? { ok: has("h1") && textNotEmpty("h1"), name: "Heading" }
+        : key.includes("smaller heading") || key.includes("(h2)") || key.includes("h2")
+          ? { ok: has("h2") && textNotEmpty("h2"), name: "Smaller heading" }
+          : key.includes("paragraph") || key.includes("(p)")
+            ? { ok: doc.querySelectorAll("p").length > 0 && bodyNotEmpty(), name: "Paragraph" }
+            : key.includes("image") || key.includes("(img)")
+              ? { ok: has("img") && hasAttr("img", "src"), name: "Image" }
+              : key.includes("alt")
+                ? { ok: has("img") && hasAttr("img", "alt"), name: "Image alt text" }
+                : key.includes("link") || key.includes("(a)") || key.includes("href")
+                  ? { ok: has("a") && hasAttr("a", "href"), name: "Link" }
+                  : key.includes("unordered list") || key.includes("(ul)")
+                    ? { ok: has("ul"), name: "Unordered list" }
+                    : key.includes("ordered list") || key.includes("(ol)")
+                      ? { ok: has("ol"), name: "Ordered list" }
+                      : key.includes("list") || key.includes("hobbies")
+                        ? { ok: has("ul") || has("ol"), name: "List" }
+                        : { ok: bodyNotEmpty(), name: "Content" };
+
+    return {
+      name: r,
+      passed: check.ok,
+      message: check.ok
+        ? "Great! That part looks good."
+        : "Almost there! Double-check this requirement.",
+    };
+  });
+}
+
+function parseHtmlForChecks(submitted: string): Document {
+  const trimmed = submitted.trim();
+  const isFullDoc =
+    /<html[\s>]/i.test(trimmed) ||
+    /<!doctype[\s>]/i.test(trimmed) ||
+    /<head[\s>]/i.test(trimmed) ||
+    /<body[\s>]/i.test(trimmed);
+
+  const html = isFullDoc
+    ? trimmed
+    : `<!doctype html><html><head></head><body>${trimmed}</body></html>`;
+
+  // DOMParser does NOT execute scripts.
+  const parser = new DOMParser();
+  return parser.parseFromString(html, "text/html");
 }
 
