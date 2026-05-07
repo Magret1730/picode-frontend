@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getLessonById, getNextLesson } from "@/lib/mock-data";
+import { apiLessonById } from "@/lib/api/picode";
 
 export default async function LessonByIdPage({
   params,
@@ -11,10 +12,12 @@ export default async function LessonByIdPage({
   params: Promise<{ lessonId: string }>;
 }) {
   const { lessonId } = await params;
-  const lesson = getLessonById(lessonId);
+  const apiRes = await apiLessonById(lessonId);
+  const lesson = apiRes.ok ? apiRes.data : getLessonById(lessonId);
   if (!lesson) return notFound();
 
   const next = getNextLesson(lessonId);
+  const offline = !apiRes.ok;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
@@ -28,6 +31,20 @@ export default async function LessonByIdPage({
           </Button>
         }
       />
+
+      {offline ? (
+        <div className="mt-6">
+          <Card className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold">Offline mode</p>
+              <p className="text-sm text-muted-foreground">
+                Backend API not available yet. Showing mock lesson content.
+              </p>
+            </div>
+            <Badge tone="zinc">Mock data</Badge>
+          </Card>
+        </div>
+      ) : null}
 
       <Card className="mt-6">
         <h2 className="text-xl font-extrabold">Goal</h2>

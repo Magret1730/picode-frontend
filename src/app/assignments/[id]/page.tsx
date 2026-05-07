@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CodePlayground } from "@/components/playground/CodePlayground";
 import { getAssignment } from "@/lib/mock-data";
+import { Card } from "@/components/ui/Card";
+import { apiAssignment } from "@/lib/api/picode";
 
 export default async function AssignmentPage({
   params,
@@ -11,8 +13,10 @@ export default async function AssignmentPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const assignment = getAssignment(id);
+  const apiRes = await apiAssignment(id);
+  const assignment = apiRes.ok ? apiRes.data : getAssignment(id);
   if (!assignment) return notFound();
+  const offline = !apiRes.ok;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
@@ -26,6 +30,20 @@ export default async function AssignmentPage({
           </Button>
         }
       />
+
+      {offline ? (
+        <div className="mt-6">
+          <Card className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold">Offline mode</p>
+              <p className="text-sm text-muted-foreground">
+                Backend API not available yet. Using mock assignment data.
+              </p>
+            </div>
+            <Badge tone="zinc">Mock data</Badge>
+          </Card>
+        </div>
+      ) : null}
 
       <div className="mt-6">
         <CodePlayground

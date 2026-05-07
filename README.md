@@ -14,6 +14,10 @@ npm install
 npm run dev
 ```
 
+## Environment variables
+
+- `NEXT_PUBLIC_API_URL`: backend base URL (example: `http://localhost:3000`)
+
 ## Pages (MVP)
 
 - `/` landing
@@ -30,6 +34,7 @@ npm run dev
 ## Data
 
 For MVP, the UI uses mock data in `src/lib/mock-data.ts`.
+If `NEXT_PUBLIC_API_URL` is set and backend endpoints exist, pages will try the API first and fall back to mock data when offline.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 

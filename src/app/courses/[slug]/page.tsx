@@ -10,6 +10,7 @@ import {
   getCourseBySlug,
   getLessonsForCourse,
 } from "@/lib/mock-data";
+import { apiCourse, apiLessonsForCourse } from "@/lib/api/picode";
 
 export default async function CourseDetailPage({
   params,
@@ -17,13 +18,17 @@ export default async function CourseDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
+  const apiCourseRes = await apiCourse(slug);
+  const apiLessonsRes = await apiLessonsForCourse(slug);
+
+  const course = apiCourseRes.ok ? apiCourseRes.data : getCourseBySlug(slug);
   if (!course) return notFound();
 
-  const lessons = getLessonsForCourse(slug);
+  const lessons = apiLessonsRes.ok ? apiLessonsRes.data : getLessonsForCourse(slug);
   const assignments = getAssignmentsForCourse(slug);
   const progress = slug === "html-beginner" ? 35 : slug === "css-beginner" ? 10 : 0;
   const firstLesson = lessons[0];
+  const offline = !apiCourseRes.ok || !apiLessonsRes.ok;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -43,6 +48,20 @@ export default async function CourseDetailPage({
           </div>
         }
       />
+
+      {offline ? (
+        <div className="mt-6">
+          <Card className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold">Offline mode</p>
+              <p className="text-sm text-muted-foreground">
+                Backend API not available yet. Showing mock course content.
+              </p>
+            </div>
+            <Badge tone="zinc">Mock data</Badge>
+          </Card>
+        </div>
+      ) : null}
 
       <div className="mt-8 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
