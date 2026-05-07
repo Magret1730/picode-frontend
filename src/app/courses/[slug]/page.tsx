@@ -1,8 +1,15 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { getCourseBySlug, getLessonsForCourse } from "@/lib/mock-data";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import {
+  getAssignmentsForCourse,
+  getCourseBySlug,
+  getLessonsForCourse,
+} from "@/lib/mock-data";
 
 export default async function CourseDetailPage({
   params,
@@ -14,6 +21,9 @@ export default async function CourseDetailPage({
   if (!course) return notFound();
 
   const lessons = getLessonsForCourse(slug);
+  const assignments = getAssignmentsForCourse(slug);
+  const progress = slug === "html-beginner" ? 35 : slug === "css-beginner" ? 10 : 0;
+  const firstLesson = lessons[0];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -21,27 +31,78 @@ export default async function CourseDetailPage({
         title={course.title}
         description={course.description}
         actions={
-          <Button variant="secondary" href="/courses">
-            Back to courses
-          </Button>
+          <div className="flex gap-2">
+            {firstLesson ? (
+              <Button href={`/lessons/${firstLesson.id}`}>
+                {progress > 0 ? "Continue" : "Start"}
+              </Button>
+            ) : null}
+            <Button variant="secondary" href="/courses">
+              Back to courses
+            </Button>
+          </div>
         }
       />
 
-      <h2 className="mt-8 text-xl font-extrabold">Lessons</h2>
-      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+      <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone="mint">Beginner</Badge>
+            <Badge tone="yellow">Course</Badge>
+          </div>
+          <h2 className="mt-3 text-2xl font-extrabold">Your progress</h2>
+          <p className="mt-1 text-muted-foreground">
+            Keep going — one small win at a time.
+          </p>
+          <div className="mt-5 rounded-3xl border border-border bg-surface-2 p-5">
+            <ProgressBar value={progress} label="Progress" />
+            <p className="mt-2 text-xs text-muted-foreground">
+              Finish lessons and classworks to increase your progress.
+            </p>
+          </div>
+        </Card>
+
+        <Card>
+          <Badge tone="pink">Assignments</Badge>
+          <h2 className="mt-3 text-2xl font-extrabold">Final projects</h2>
+          <p className="mt-1 text-muted-foreground">
+            Show what you learned with a bigger build.
+          </p>
+          <div className="mt-4 grid gap-2">
+            {assignments.map((a) => (
+              <Link
+                key={a.id}
+                href={`/assignments/${a.id}`}
+                className="rounded-3xl border border-border bg-surface-2 p-4 transition hover:brightness-95"
+              >
+                <p className="font-semibold">{a.title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Final assignment (mock)
+                </p>
+              </Link>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      <h2 className="mt-10 text-2xl font-extrabold">Lessons</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {lessons.length === 0 ? (
           <Card>
-            <p className="text-[color:var(--text-2)]">
+            <p className="text-muted-foreground">
               Lessons will appear here soon. (Mock data is partial for now.)
             </p>
           </Card>
         ) : (
           lessons.map((l) => (
             <Card key={l.id} className="flex flex-col gap-2">
-              <h3 className="text-lg font-extrabold">{l.title}</h3>
-              <p className="text-sm text-[color:var(--text-2)]">{l.goal}</p>
-              <div className="mt-auto flex gap-2">
-                <Button href={`/courses/${slug}/lessons/${l.slug}`}>Open</Button>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-lg font-extrabold">{l.title}</h3>
+                <Badge tone="zinc">#{l.orderIndex}</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">{l.goal}</p>
+              <div className="mt-auto flex flex-wrap gap-2">
+                <Button href={`/lessons/${l.id}`}>Open lesson</Button>
                 {l.classworkId ? (
                   <Button variant="ghost" href={`/classworks/${l.classworkId}`}>
                     Classwork
