@@ -1,5 +1,3 @@
-import "server-only";
-
 type AdminResult<T> = { ok: true; data: T } | { ok: false; message: string };
 
 function getBaseUrl(): string {
@@ -8,12 +6,9 @@ function getBaseUrl(): string {
   return base.replace(/\/+$/, "");
 }
 
-function getAdminKey(): string {
-  return process.env.ADMIN_KEY ?? process.env.NEXT_ADMIN_KEY ?? "dev-admin";
-}
-
 async function adminFetch<T>(
   path: string,
+  token: string,
   init?: RequestInit,
 ): Promise<AdminResult<T>> {
   try {
@@ -21,7 +16,7 @@ async function adminFetch<T>(
       ...init,
       headers: {
         "content-type": "application/json",
-        "X-Admin-Key": getAdminKey(),
+        Authorization: `Bearer ${token}`,
         ...(init?.headers ?? {}),
       },
       cache: "no-store",
@@ -88,53 +83,58 @@ export type AdminAssignmentRow = {
 
 export const adminApi = {
   lessons: {
-    list: () => adminFetch<AdminLessonRow[]>("/admin/lessons"),
-    create: (body: any) =>
-      adminFetch<AdminLessonRow>("/admin/lessons", {
+    list: (token: string) =>
+      adminFetch<AdminLessonRow[]>("/admin/lessons", token),
+    create: (token: string, body: any) =>
+      adminFetch<AdminLessonRow>("/admin/lessons", token, {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    update: (id: string, body: any) =>
-      adminFetch<AdminLessonRow>(`/admin/lessons/${encodeURIComponent(id)}`, {
+    update: (token: string, id: string, body: any) =>
+      adminFetch<AdminLessonRow>(`/admin/lessons/${encodeURIComponent(id)}`, token, {
         method: "PUT",
         body: JSON.stringify(body),
       }),
-    remove: (id: string) =>
-      adminFetch<{ ok: true }>(`/admin/lessons/${encodeURIComponent(id)}`, {
+    remove: (token: string, id: string) =>
+      adminFetch<{ ok: true }>(`/admin/lessons/${encodeURIComponent(id)}`, token, {
         method: "DELETE",
       }),
   },
   classworks: {
-    list: () => adminFetch<AdminClassworkRow[]>("/admin/classworks"),
-    create: (body: any) =>
-      adminFetch<AdminClassworkRow>("/admin/classworks", {
+    list: (token: string) =>
+      adminFetch<AdminClassworkRow[]>("/admin/classworks", token),
+    create: (token: string, body: any) =>
+      adminFetch<AdminClassworkRow>("/admin/classworks", token, {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    update: (id: string, body: any) =>
+    update: (token: string, id: string, body: any) =>
       adminFetch<AdminClassworkRow>(
         `/admin/classworks/${encodeURIComponent(id)}`,
+        token,
         { method: "PUT", body: JSON.stringify(body) },
       ),
-    remove: (id: string) =>
-      adminFetch<{ ok: true }>(`/admin/classworks/${encodeURIComponent(id)}`, {
+    remove: (token: string, id: string) =>
+      adminFetch<{ ok: true }>(`/admin/classworks/${encodeURIComponent(id)}`, token, {
         method: "DELETE",
       }),
   },
   assignments: {
-    list: () => adminFetch<AdminAssignmentRow[]>("/admin/assignments"),
-    create: (body: any) =>
-      adminFetch<AdminAssignmentRow>("/admin/assignments", {
+    list: (token: string) =>
+      adminFetch<AdminAssignmentRow[]>("/admin/assignments", token),
+    create: (token: string, body: any) =>
+      adminFetch<AdminAssignmentRow>("/admin/assignments", token, {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    update: (id: string, body: any) =>
+    update: (token: string, id: string, body: any) =>
       adminFetch<AdminAssignmentRow>(
         `/admin/assignments/${encodeURIComponent(id)}`,
+        token,
         { method: "PUT", body: JSON.stringify(body) },
       ),
-    remove: (id: string) =>
-      adminFetch<{ ok: true }>(`/admin/assignments/${encodeURIComponent(id)}`, {
+    remove: (token: string, id: string) =>
+      adminFetch<{ ok: true }>(`/admin/assignments/${encodeURIComponent(id)}`, token, {
         method: "DELETE",
       }),
   },

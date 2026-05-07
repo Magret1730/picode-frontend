@@ -45,6 +45,15 @@ export function Navbar() {
               >
                 Dashboard
               </Button>
+              {user.role === "admin" ? (
+                <Button
+                  className="hidden sm:inline-flex"
+                  variant="ghost"
+                  href="/admin"
+                >
+                  Admin
+                </Button>
+              ) : null}
               <Button variant="secondary" onClick={logout}>
                 Log out
               </Button>

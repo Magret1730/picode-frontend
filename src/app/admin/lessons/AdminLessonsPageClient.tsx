@@ -7,36 +7,29 @@ import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { adminApi, type AdminClassworkRow } from "@/lib/admin/api";
+import { adminApi, type AdminLessonRow } from "@/lib/admin/api";
 
-function requirementsToTextarea(req: unknown): string {
-  if (Array.isArray(req)) return req.map(String).join("\n");
-  if (typeof req === "string") return req;
-  if (req && typeof req === "object")
-    return Object.values(req as any).map(String).join("\n");
-  return "";
-}
-
-export default function AdminClassworksPage() {
+export default function AdminLessonsPageClient() {
   const { token, user } = useAuth();
   const isAdmin = user?.role === "admin";
-  const authToken = token ?? "";
 
-  const [rows, setRows] = useState<AdminClassworkRow[]>([]);
+  const [lessons, setLessons] = useState<AdminLessonRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
+
+  const authToken = token ?? "";
 
   async function refresh() {
     if (!authToken || !isAdmin) return;
     setLoading(true);
     try {
-      const res = await adminApi.classworks.list(authToken);
+      const res = await adminApi.lessons.list(authToken);
       if (!res.ok) {
         setMessage(res.message);
-        setRows([]);
+        setLessons([]);
         return;
       }
-      setRows(res.data);
+      setLessons(res.data);
     } finally {
       setLoading(false);
     }
@@ -48,65 +41,52 @@ export default function AdminClassworksPage() {
   }, [authToken, isAdmin]);
 
   const sorted = useMemo(
-    () => rows.slice().sort((a, b) => (b.updated_at > a.updated_at ? 1 : -1)),
-    [rows],
+    () => lessons.slice().sort((a, b) => (b.updated_at > a.updated_at ? 1 : -1)),
+    [lessons],
   );
 
   async function onCreate(fd: FormData) {
     if (!authToken) return;
-    const requirementsText = String(fd.get("requirements") ?? "").trim();
-    const requirements = requirementsText
-      ? requirementsText
-          .split("\n")
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : [];
-
     const body = {
-      lessonId: String(fd.get("lessonId") ?? "").trim(),
+      levelId: String(fd.get("levelId") ?? "").trim(),
       title: String(fd.get("title") ?? "").trim(),
-      instructions: String(fd.get("instructions") ?? "").trim(),
-      starterCode: String(fd.get("starterCode") ?? ""),
-      requirements,
+      slug: String(fd.get("slug") ?? "").trim(),
+      goal: String(fd.get("goal") ?? "").trim(),
+      explanation: String(fd.get("explanation") ?? "").trim(),
+      exampleCode: String(fd.get("exampleCode") ?? ""),
       orderIndex: Number(String(fd.get("orderIndex") ?? "1").trim() || 1),
     };
 
-    if (!body.lessonId || !body.title || !body.instructions) {
+    if (!body.levelId || !body.title || !body.slug || !body.goal || !body.explanation) {
       setMessage("Please fill in all required fields.");
       return;
     }
 
-    const res = await adminApi.classworks.create(authToken, body);
-    setMessage(res.ok ? "Classwork created." : res.message);
+    const res = await adminApi.lessons.create(authToken, body);
+    setMessage(res.ok ? "Lesson created." : res.message);
     if (res.ok) await refresh();
   }
 
   async function onUpdate(id: string, fd: FormData) {
     if (!authToken) return;
-    const requirementsText = String(fd.get("requirements") ?? "").trim();
     const patch: Record<string, unknown> = {
       title: String(fd.get("title") ?? "").trim(),
-      instructions: String(fd.get("instructions") ?? "").trim(),
-      starterCode: String(fd.get("starterCode") ?? ""),
-      orderIndex:
-        Number(String(fd.get("orderIndex") ?? "").trim() || 0) || undefined,
+      slug: String(fd.get("slug") ?? "").trim(),
+      goal: String(fd.get("goal") ?? "").trim(),
+      explanation: String(fd.get("explanation") ?? "").trim(),
+      exampleCode: String(fd.get("exampleCode") ?? ""),
+      orderIndex: Number(String(fd.get("orderIndex") ?? "").trim() || 0) || undefined,
     };
-    if (requirementsText) {
-      patch.requirements = requirementsText
-        .split("\n")
-        .map((s) => s.trim())
-        .filter(Boolean);
-    }
 
-    const res = await adminApi.classworks.update(authToken, id, patch);
-    setMessage(res.ok ? "Classwork updated." : res.message);
+    const res = await adminApi.lessons.update(authToken, id, patch);
+    setMessage(res.ok ? "Lesson updated." : res.message);
     if (res.ok) await refresh();
   }
 
   async function onDelete(id: string) {
     if (!authToken) return;
-    const res = await adminApi.classworks.remove(authToken, id);
-    setMessage(res.ok ? "Classwork deleted." : res.message);
+    const res = await adminApi.lessons.remove(authToken, id);
+    setMessage(res.ok ? "Lesson deleted." : res.message);
     if (res.ok) await refresh();
   }
 
@@ -115,8 +95,8 @@ export default function AdminClassworksPage() {
       <RequireAdmin />
       <PageHeader
         eyebrow={<Badge tone="zinc">Admin</Badge>}
-        title="Classworks"
-        description="Create, edit, and delete classworks (admin only)."
+        title="Lessons"
+        description="Create, edit, and delete lessons (admin only)."
         actions={
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" href="/admin">
@@ -139,9 +119,9 @@ export default function AdminClassworksPage() {
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-1">
-          <h2 className="text-xl font-extrabold">Create classwork</h2>
+          <h2 className="text-xl font-extrabold">Create lesson</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Use one requirement per line.
+            Required fields only for MVP.
           </p>
 
           <form
@@ -152,18 +132,18 @@ export default function AdminClassworksPage() {
               e.currentTarget.reset();
             }}
           >
-            <Input name="lessonId" label="Lesson ID" placeholder="uuid" required />
+            <Input name="levelId" label="Level ID" placeholder="uuid" required />
             <Input name="title" label="Title" required />
-            <Textarea name="instructions" label="Instructions" rows={4} required />
-            <Textarea name="requirements" label="Requirements" rows={4} />
-            <Textarea name="starterCode" label="Starter code" rows={6} mono />
-            <Input
-              name="orderIndex"
-              label="Order"
-              type="number"
-              required
-              defaultValue="1"
+            <Input name="slug" label="Slug" placeholder="what-is-html" required />
+            <Input name="goal" label="Goal" required />
+            <Textarea name="explanation" label="Explanation" rows={4} required />
+            <Textarea
+              name="exampleCode"
+              label="Example code (optional)"
+              rows={4}
+              mono
             />
+            <Input name="orderIndex" label="Order" type="number" required defaultValue="1" />
             <Button type="submit" disabled={!authToken || loading}>
               {loading ? "Loading..." : "Create"}
             </Button>
@@ -173,19 +153,19 @@ export default function AdminClassworksPage() {
         <div className="lg:col-span-2 grid gap-3">
           {loading ? (
             <Card>
-              <p className="text-sm text-muted-foreground">Loading classworks…</p>
+              <p className="text-sm text-muted-foreground">Loading lessons…</p>
             </Card>
           ) : sorted.length ? (
-            sorted.map((cw) => (
-              <Card key={cw.id}>
+            sorted.map((l) => (
+              <Card key={l.id}>
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-lg font-extrabold">{cw.title}</p>
+                    <p className="truncate text-lg font-extrabold">{l.title}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      <span className="font-semibold">id:</span> {cw.id}
+                      <span className="font-semibold">id:</span> {l.id}
                     </p>
                   </div>
-                  <Badge tone="zinc">order {cw.order_index}</Badge>
+                  <Badge tone="zinc">order {l.order_index}</Badge>
                 </div>
 
                 <details className="mt-4">
@@ -196,34 +176,30 @@ export default function AdminClassworksPage() {
                     className="mt-3 grid gap-3"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      onUpdate(cw.id, new FormData(e.currentTarget));
+                      onUpdate(l.id, new FormData(e.currentTarget));
                     }}
                   >
-                    <Input name="title" label="Title" defaultValue={cw.title} />
+                    <Input name="title" label="Title" defaultValue={l.title} />
+                    <Input name="slug" label="Slug" defaultValue={l.slug} />
+                    <Input name="goal" label="Goal" defaultValue={l.goal} />
                     <Textarea
-                      name="instructions"
-                      label="Instructions"
+                      name="explanation"
+                      label="Explanation"
                       rows={4}
-                      defaultValue={cw.instructions}
+                      defaultValue={l.explanation}
                     />
                     <Textarea
-                      name="requirements"
-                      label="Requirements"
+                      name="exampleCode"
+                      label="Example code"
                       rows={4}
-                      defaultValue={requirementsToTextarea(cw.requirements)}
-                    />
-                    <Textarea
-                      name="starterCode"
-                      label="Starter code"
-                      rows={6}
                       mono
-                      defaultValue={cw.starter_code}
+                      defaultValue={l.example_code}
                     />
                     <Input
                       name="orderIndex"
                       label="Order"
                       type="number"
-                      defaultValue={String(cw.order_index)}
+                      defaultValue={String(l.order_index)}
                     />
                     <div className="flex flex-wrap gap-2">
                       <Button type="submit" disabled={!authToken}>
@@ -232,7 +208,7 @@ export default function AdminClassworksPage() {
                       <Button
                         type="button"
                         variant="secondary"
-                        onClick={() => onDelete(cw.id)}
+                        onClick={() => onDelete(l.id)}
                         disabled={!authToken}
                       >
                         Delete
@@ -244,9 +220,9 @@ export default function AdminClassworksPage() {
             ))
           ) : (
             <Card>
-              <p className="font-semibold">No classworks yet</p>
+              <p className="font-semibold">No lessons yet</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Create your first classwork using the form.
+                Create your first lesson using the form.
               </p>
             </Card>
           )}
@@ -317,5 +293,4 @@ function Textarea({
     </label>
   );
 }
-
 
