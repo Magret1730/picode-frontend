@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 export function Navbar() {
   return (
@@ -10,9 +11,12 @@ export function Navbar() {
             P
           </span>
           <span className="text-lg">Picode</span>
+          <span className="hidden sm:inline">
+            <Badge tone="yellow">Where kids build the web.</Badge>
+          </span>
         </Link>
 
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1 sm:gap-2">
           <Link
             href="/courses"
             className="rounded-xl px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100"
@@ -25,10 +29,10 @@ export function Navbar() {
           >
             Progress
           </Link>
-          <Button variant="ghost" href="/login">
+          <Button className="hidden sm:inline-flex" variant="ghost" href="/login">
             Log in
           </Button>
-          <Button href="/register">Start learning</Button>
+          <Button href="/register">Start</Button>
         </nav>
       </div>
     </header>

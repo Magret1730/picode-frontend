@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Picode",
-  description: "A kid-friendly coding adventure.",
+  description: "Where kids build the web.",
 };
 
 export default function RootLayout({

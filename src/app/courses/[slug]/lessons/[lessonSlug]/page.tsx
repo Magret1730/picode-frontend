@@ -6,10 +6,10 @@ import { getLesson } from "@/lib/mock-data";
 export default async function LessonPage({
   params,
 }: {
-  params: Promise<{ courseSlug: string; lessonSlug: string }>;
+  params: Promise<{ slug: string; lessonSlug: string }>;
 }) {
-  const { courseSlug, lessonSlug } = await params;
-  const lesson = getLesson(courseSlug, lessonSlug);
+  const { slug, lessonSlug } = await params;
+  const lesson = getLesson(slug, lessonSlug);
   if (!lesson) return notFound();
 
   return (
@@ -19,7 +19,7 @@ export default async function LessonPage({
           <h1 className="text-3xl font-extrabold">{lesson.title}</h1>
           <p className="mt-1 text-zinc-700">{lesson.goal}</p>
         </div>
-        <Button variant="secondary" href={`/courses/${courseSlug}`}>
+        <Button variant="secondary" href={`/courses/${slug}`}>
           Back to course
         </Button>
       </div>

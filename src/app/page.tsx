@@ -1,51 +1,253 @@
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-semibold shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-[color:var(--picode-mint)]" />
-            Learn HTML + CSS the fun way
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,93,177,0.18),transparent_55%),radial-gradient(circle_at_80%_10%,rgba(77,157,255,0.18),transparent_55%),radial-gradient(circle_at_30%_90%,rgba(49,214,194,0.16),transparent_55%)]" />
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+            <div>
+              <Badge tone="yellow">Picode</Badge>
+              <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+                Where kids build the web.
+              </h1>
+              <p className="mt-4 text-lg text-zinc-700">
+                Bright lessons. Tiny steps. Big wins. Learn HTML and CSS by
+                building real webpages — and earn XP as you go.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button href="/register">Start learning</Button>
+                <Button variant="secondary" href="/courses">
+                  Preview courses
+                </Button>
+                <Button variant="ghost" href="/login">
+                  Log in
+                </Button>
+              </div>
+            </div>
+
+            <Card className="relative overflow-hidden">
+              <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[color:var(--picode-yellow)] blur-2xl opacity-60" />
+              <div className="absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-[color:var(--picode-blue)] blur-2xl opacity-50" />
+
+              <div className="relative">
+                <Badge tone="mint">Today’s mini-mission</Badge>
+                <h2 className="mt-3 text-xl font-extrabold">
+                  Build a mini profile page
+                </h2>
+                <p className="mt-2 text-zinc-700">
+                  Add a title, your name, a picture, and a link.
+                </p>
+                <div className="mt-5 rounded-xl border border-zinc-200 bg-zinc-50 p-4 font-mono text-sm text-zinc-800">
+                  {
+                    "<h1>Your Name</h1>\n<p>About me…</p>\n<img alt=\"Me\" />\n<a href=\"https://…\">My site</a>"
+                  }
+                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:items-center">
+                  <div>
+                    <p className="text-sm font-semibold text-zinc-700">
+                      Earn:{" "}
+                      <span className="text-[color:var(--picode-pink)]">
+                        +10 XP
+                      </span>
+                    </p>
+                    <div className="mt-3">
+                      <ProgressBar value={20} label="Level progress" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 sm:justify-end">
+                    <Button href="/dashboard">Dashboard</Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
-          <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Build awesome webpages,
-            <span className="text-[color:var(--picode-pink)]"> one badge</span> at
-            a time.
-          </h1>
-          <p className="mt-4 text-lg text-zinc-700">
-            Picode helps students learn by doing. Each lesson gives you a quick
-            goal, a tiny example, and a challenge you can finish today.
-          </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button href="/register">Start learning</Button>
-            <Button variant="secondary" href="/courses">
-              Browse courses
-            </Button>
+        </div>
+      </section>
+
+      {/* What kids will learn */}
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <Badge tone="blue">What kids will learn</Badge>
+            <h2 className="mt-3 text-3xl font-extrabold">
+              Real web skills, made simple
+            </h2>
+            <p className="mt-2 text-zinc-700">
+              Learn by building. Every step gives friendly feedback.
+            </p>
+          </div>
+          <Button variant="secondary" href="/courses">
+            See the lessons
+          </Button>
+        </div>
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <h3 className="text-lg font-extrabold">HTML basics</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              Headings, paragraphs, images, links, and lists.
+            </p>
+          </Card>
+          <Card>
+            <h3 className="text-lg font-extrabold">CSS style powers</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              Color, fonts, spacing, borders, and backgrounds.
+            </p>
+          </Card>
+          <Card>
+            <h3 className="text-lg font-extrabold">Clean structure</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              Make pages easy to read and fun to explore.
+            </p>
+          </Card>
+          <Card>
+            <h3 className="text-lg font-extrabold">Confidence</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              Small wins turn into big skills.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* Course preview */}
+      <section className="mx-auto max-w-6xl px-4 pb-12">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card className="relative overflow-hidden">
+            <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[color:var(--picode-yellow)] blur-2xl opacity-50" />
+            <Badge tone="yellow">Course preview</Badge>
+            <h3 className="mt-3 text-2xl font-extrabold">HTML Beginner</h3>
+            <p className="mt-2 text-zinc-700">
+              Build the structure of webpages with friendly, bite-size lessons.
+            </p>
+            <ul className="mt-4 grid gap-2 text-sm text-zinc-700">
+              <li>• What is HTML?</li>
+              <li>• Headings & paragraphs</li>
+              <li>• Images & links</li>
+              <li>• Lists</li>
+            </ul>
+            <div className="mt-5">
+              <Button href="/courses/html-beginner">Preview HTML</Button>
+            </div>
+          </Card>
+
+          <Card className="relative overflow-hidden">
+            <div className="absolute -left-16 -bottom-16 h-44 w-44 rounded-full bg-[color:var(--picode-blue)] blur-2xl opacity-45" />
+            <Badge tone="blue">Course preview</Badge>
+            <h3 className="mt-3 text-2xl font-extrabold">CSS Beginner</h3>
+            <p className="mt-2 text-zinc-700">
+              Add style magic — colors, fonts, spacing, and more.
+            </p>
+            <ul className="mt-4 grid gap-2 text-sm text-zinc-700">
+              <li>• What is CSS?</li>
+              <li>• Fonts & text styling</li>
+              <li>• Borders & spacing</li>
+              <li>• Backgrounds & images</li>
+            </ul>
+            <div className="mt-5">
+              <Button href="/courses/css-beginner">Preview CSS</Button>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Age groups */}
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <Badge tone="pink">Age groups</Badge>
+        <h2 className="mt-3 text-3xl font-extrabold">Pick your path</h2>
+        <p className="mt-2 text-zinc-700">
+          Same skills, different vibes — choose what feels right.
+        </p>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <Card className="border-[color:var(--picode-yellow)]/40">
+            <h3 className="text-xl font-extrabold">Junior</h3>
+            <p className="mt-1 text-sm text-zinc-700">Ages 8–10</p>
+            <p className="mt-3 text-sm text-zinc-700">
+              Short missions and big high-fives. Perfect for first-time coders.
+            </p>
+          </Card>
+          <Card className="border-[color:var(--picode-mint)]/45">
+            <h3 className="text-xl font-extrabold">Builder</h3>
+            <p className="mt-1 text-sm text-zinc-700">Ages 11–12</p>
+            <p className="mt-3 text-sm text-zinc-700">
+              Build cool pages with more choices and creative challenges.
+            </p>
+          </Card>
+          <Card className="border-[color:var(--picode-blue)]/40">
+            <h3 className="text-xl font-extrabold">Creator</h3>
+            <p className="mt-1 text-sm text-zinc-700">Ages 13–14</p>
+            <p className="mt-3 text-sm text-zinc-700">
+              Level up with bigger projects and stronger design skills.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <Badge tone="mint">How it works</Badge>
+            <h2 className="mt-3 text-3xl font-extrabold">
+              Learn by building, not guessing
+            </h2>
+            <p className="mt-2 text-zinc-700">
+              Write code → run checks → celebrate your win.
+            </p>
           </div>
         </div>
 
-        <Card className="relative overflow-hidden">
-          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[color:var(--picode-yellow)] blur-2xl opacity-60" />
-          <div className="absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-[color:var(--picode-blue)] blur-2xl opacity-50" />
-
-          <h2 className="text-xl font-extrabold">Today’s mini-mission</h2>
-          <p className="mt-2 text-zinc-700">
-            Make a profile page with a title, a picture, and a link.
-          </p>
-          <div className="mt-5 rounded-xl border border-zinc-200 bg-zinc-50 p-4 font-mono text-sm text-zinc-800">
-            {"<h1>Your Name</h1>\n<p>About me…</p>\n<img alt=\"Me\" />\n<a href=\"https://…\">My site</a>"}
-          </div>
-          <div className="mt-5 flex items-center justify-between">
-            <p className="text-sm font-semibold text-zinc-700">
-              Earn: <span className="text-[color:var(--picode-pink)]">+10 XP</span>
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          <Card>
+            <h3 className="text-lg font-extrabold">1) Pick a lesson</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              A short goal + a tiny example gets you started fast.
             </p>
-            <Button href="/dashboard">Go to dashboard</Button>
+          </Card>
+          <Card>
+            <h3 className="text-lg font-extrabold">2) Do the classwork</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              Build a real page. Add headings, images, or styles.
+            </p>
+          </Card>
+          <Card>
+            <h3 className="text-lg font-extrabold">3) Run friendly checks</h3>
+            <p className="mt-1 text-sm text-zinc-700">
+              Get kid-friendly feedback. Fix one thing at a time.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mx-auto max-w-6xl px-4 pb-14">
+        <Card className="relative overflow-hidden">
+          <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[color:var(--picode-pink)] blur-3xl opacity-20" />
+          <div className="absolute -left-24 -bottom-24 h-64 w-64 rounded-full bg-[color:var(--picode-mint)] blur-3xl opacity-20" />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-extrabold">
+                Ready to build your first webpage?
+              </h2>
+              <p className="mt-1 text-zinc-700">
+                Start with HTML Beginner and earn your first XP today.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button href="/register">Start learning</Button>
+              <Button variant="secondary" href="/courses">
+                Browse courses
+              </Button>
+            </div>
           </div>
         </Card>
-      </div>
+      </section>
     </div>
   );
 }
