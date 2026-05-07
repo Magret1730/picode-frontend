@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -13,6 +13,29 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 });
 
 type TestResult = { name: string; passed: boolean; message: string };
+
+function normalizeRequirements(input: unknown): string[] {
+  if (Array.isArray(input)) return input.map((v) => String(v)).filter((s) => s.trim().length > 0);
+  if (typeof input === "string") {
+    const s = input.trim();
+    return s ? [s] : [];
+  }
+  if (!input) return [];
+  if (typeof input === "object") {
+    const obj = input as Record<string, unknown>;
+    const values = Object.values(obj).flatMap((v) => {
+      if (typeof v === "string") return [v];
+      if (v && typeof v === "object") {
+        const maybeLabel = (v as { label?: unknown }).label;
+        if (typeof maybeLabel === "string") return [maybeLabel];
+        return Object.values(v as Record<string, unknown>).map(String);
+      }
+      return [String(v)];
+    });
+    return values.map((s) => String(s)).filter((s) => s.trim().length > 0);
+  }
+  return [String(input)].filter((s) => s.trim().length > 0);
+}
 
 export function CodePlayground({
   title,
@@ -27,10 +50,10 @@ export function CodePlayground({
 }: {
   title: string;
   instructions: string;
-  requirements: string[];
+  requirements: unknown;
   starterCode: string;
   languageLabel?: string;
-  submission: { userId: string } & (
+  submission?: { userId: string } & (
     | { classworkId: string; assignmentId?: never }
     | { assignmentId: string; classworkId?: never }
   );
@@ -38,11 +61,22 @@ export function CodePlayground({
   onCompleteLabel?: string;
   className?: string;
 }) {
-  const [code, setCode] = useState(starterCode);
+  const [code, setCode] = useState(starterCode ?? "");
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [results, setResults] = useState<TestResult[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const safeRequirements = useMemo(
+    () => normalizeRequirements(requirements),
+    [requirements],
+  );
+
+  useEffect(() => {
+    const incoming = starterCode ?? "";
+    if (incoming && !code) {
+      setCode(incoming);
+    }
+  }, [starterCode, code]);
 
   const iframeDoc = useMemo(() => {
     if (!srcDoc) return "";
@@ -61,9 +95,37 @@ export function CodePlayground({
     try {
       setSubmitError(null);
 
-      const res = await apiRunSubmissionTests({
-        ...submission,
+      if (!submission) {
+        setSubmitError(
+          "This activity is in offline mode right now. Connect to the backend to submit.",
+        );
+        return;
+      }
+
+      const trimmed = code.trim();
+      if (!trimmed) {
+        setSubmitError("Add some code before submitting.");
+        return;
+      }
+
+      const payload = {
+        userId: submission.userId,
+        ...(submission && "classworkId" in submission
+          ? { classworkId: submission.classworkId, assignmentId: null as null }
+          : { assignmentId: submission.assignmentId, classworkId: null as null }),
         submittedCode: code,
+      };
+
+      if (process.env.NODE_ENV !== "production") {
+        // eslint-disable-next-line no-console
+        console.log("Submitting payload", payload);
+      }
+
+      const res = await apiRunSubmissionTests({
+        userId: payload.userId,
+        classworkId: payload.classworkId ?? undefined,
+        assignmentId: payload.assignmentId ?? undefined,
+        submittedCode: payload.submittedCode,
       });
 
       if (!res.ok) {
@@ -102,16 +164,22 @@ export function CodePlayground({
           <p className="text-sm font-semibold text-muted-foreground">
             Requirements
           </p>
-          <ul className="mt-3 grid gap-2">
-            {requirements.map((r) => (
-              <li key={r} className="flex items-start gap-2 text-sm">
-                <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-card ring-1 ring-border">
-                  ✓
-                </span>
-                <span className="text-muted-foreground">{r}</span>
-              </li>
-            ))}
-          </ul>
+          {safeRequirements.length ? (
+            <ul className="mt-3 grid gap-2">
+              {safeRequirements.map((r, idx) => (
+                <li key={`${idx}-${r}`} className="flex items-start gap-2 text-sm">
+                  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-card ring-1 ring-border">
+                    ✓
+                  </span>
+                  <span className="text-muted-foreground">{r}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-muted-foreground">
+              No requirements listed yet.
+            </p>
+          )}
         </div>
 
         <div className="mt-auto flex flex-wrap gap-2">
@@ -119,7 +187,7 @@ export function CodePlayground({
           <Button variant="secondary" onClick={submit} disabled={submitting}>
             {submitting ? "Submitting..." : "Submit"}
           </Button>
-          <Button variant="ghost" onClick={() => setCode(starterCode)}>
+          <Button variant="ghost" onClick={() => setCode(starterCode ?? "")}>
             Reset
           </Button>
         </div>

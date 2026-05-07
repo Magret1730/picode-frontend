@@ -24,7 +24,19 @@ export default async function CourseDetailPage({
   const course = apiCourseRes.ok ? apiCourseRes.data : getCourseBySlug(slug);
   if (!course) return notFound();
 
-  const lessons = apiLessonsRes.ok ? apiLessonsRes.data : getLessonsForCourse(slug);
+  const lessons = apiLessonsRes.ok
+    ? apiLessonsRes.data.map((l) => ({
+        id: l.id,
+        courseSlug: slug,
+        slug: l.slug,
+        title: l.title,
+        orderIndex: l.order_index,
+        goal: l.goal,
+        explanation: l.explanation,
+        exampleCode: l.example_code,
+        classworkId: l.classwork_id ?? undefined,
+      }))
+    : getLessonsForCourse(slug);
   const assignments = getAssignmentsForCourse(slug);
   const progress = slug === "html-beginner" ? 35 : slug === "css-beginner" ? 10 : 0;
   const firstLesson = lessons[0];

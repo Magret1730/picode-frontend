@@ -43,7 +43,7 @@ export default async function ClassworkPage({
           instructions="Write your code, run it to preview, then submit for friendly feedback."
           requirements={classwork.requirements ?? []}
           starterCode={classwork.starterCode ?? ""}
-          submission={{ userId: "user_demo", classworkId: id }}
+          submission={apiRes.ok ? { userId: "demo-user", classworkId: id } : undefined}
           onCompleteHref="/dashboard"
           onCompleteLabel="Continue"
         />

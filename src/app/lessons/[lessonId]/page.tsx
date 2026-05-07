@@ -13,7 +13,19 @@ export default async function LessonByIdPage({
 }) {
   const { lessonId } = await params;
   const apiRes = await apiLessonById(lessonId);
-  const lesson = apiRes.ok ? apiRes.data : getLessonById(lessonId);
+  const lesson = apiRes.ok
+    ? {
+        id: apiRes.data.id,
+        courseSlug: apiRes.data.course_slug,
+        slug: apiRes.data.slug,
+        title: apiRes.data.title,
+        orderIndex: apiRes.data.order_index,
+        goal: apiRes.data.goal,
+        explanation: apiRes.data.explanation,
+        exampleCode: apiRes.data.example_code,
+        classworkId: apiRes.data.classwork_id ?? undefined,
+      }
+    : getLessonById(lessonId);
   if (!lesson) return notFound();
 
   const next = getNextLesson(lessonId);
