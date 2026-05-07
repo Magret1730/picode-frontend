@@ -123,3 +123,38 @@ export async function apiRunSubmissionTests(body: RunTestsRequest) {
   });
 }
 
+export type UserProgressResponse = {
+  userId: string;
+  xpTotal: number;
+  currentCourseSlug: string | null;
+  courseSummaries: Array<{
+    courseSlug: string;
+    courseTitle: string;
+    xp: number;
+    lessonsCompleted: number;
+    assignmentsCompleted: number;
+  }>;
+  completedLessons: Array<{
+    courseSlug: string;
+    courseTitle: string;
+    lessonId: string;
+    lessonTitle: string;
+    xp: number;
+    completedAt: string;
+  }>;
+  completedAssignments: Array<{
+    courseSlug: string;
+    courseTitle: string;
+    assignmentId: string;
+    assignmentTitle: string;
+    xp: number;
+    completedAt: string;
+  }>;
+};
+
+export async function apiUserProgress(userId: string) {
+  return await fetchJson<UserProgressResponse>(
+    `/progress/${encodeURIComponent(userId)}`,
+  );
+}
+
