@@ -6,6 +6,7 @@ export default function RegisterPage() {
       title="Let’s get started!"
       subtitle="Create your account and earn your first badge."
       submitLabel="Create account"
+      mode="register"
     />
   );
 }

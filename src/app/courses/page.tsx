@@ -5,6 +5,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { mockCourses } from "@/lib/mock-data";
 import { apiCourses } from "@/lib/api/picode";
 import { Badge } from "@/components/ui/Badge";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 
 export default function CoursesPage() {
   // Server component: try API first, fall back to mock.
@@ -13,6 +14,7 @@ export default function CoursesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <RequireAuth />
       <PageHeader
         title="Courses"
         description="Choose your adventure. Start with HTML, then add CSS magic."

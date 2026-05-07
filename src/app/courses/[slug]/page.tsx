@@ -11,6 +11,7 @@ import {
   getLessonsForCourse,
 } from "@/lib/mock-data";
 import { apiCourse, apiLessonsForCourse } from "@/lib/api/picode";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 
 export default async function CourseDetailPage({
   params,
@@ -44,6 +45,7 @@ export default async function CourseDetailPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <RequireAuth />
       <PageHeader
         title={course.title}
         description={course.description}

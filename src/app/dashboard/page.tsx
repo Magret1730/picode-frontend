@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { mockCourses } from "@/lib/mock-data";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 
 export default function DashboardPage() {
   const student = {
@@ -73,6 +74,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <RequireAuth />
       {/* 1) Welcome hero */}
       <Card className="relative overflow-hidden">
         <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[color:var(--brand-blue)] blur-3xl opacity-10" />

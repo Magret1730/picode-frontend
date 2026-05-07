@@ -2,11 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import { apiRunSubmissionTests } from "@/lib/api/picode";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -53,14 +55,13 @@ export function CodePlayground({
   requirements: unknown;
   starterCode: string;
   languageLabel?: string;
-  submission?: { userId: string } & (
-    | { classworkId: string; assignmentId?: never }
-    | { assignmentId: string; classworkId?: never }
-  );
+  submission?: { classworkId: string; assignmentId?: never } | { assignmentId: string; classworkId?: never };
   onCompleteHref?: string;
   onCompleteLabel?: string;
   className?: string;
 }) {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const [code, setCode] = useState(starterCode ?? "");
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [results, setResults] = useState<TestResult[] | null>(null);
@@ -102,6 +103,12 @@ export function CodePlayground({
         return;
       }
 
+      if (!loading && !user) {
+        setSubmitError("Please log in to submit your work.");
+        router.push("/login");
+        return;
+      }
+
       const trimmed = code.trim();
       if (!trimmed) {
         setSubmitError("Add some code before submitting.");
@@ -109,10 +116,10 @@ export function CodePlayground({
       }
 
       const payload = {
-        userId: submission.userId,
         ...(submission && "classworkId" in submission
           ? { classworkId: submission.classworkId, assignmentId: null as null }
           : { assignmentId: submission.assignmentId, classworkId: null as null }),
+        userId: user?.id ?? "",
         submittedCode: code,
       };
 

@@ -6,6 +6,7 @@ import { CodePlayground } from "@/components/playground/CodePlayground";
 import { getClasswork } from "@/lib/mock-data";
 import { notFound } from "next/navigation";
 import { apiClasswork } from "@/lib/api/picode";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 
 export default async function ClassworkPage({
   params,
@@ -20,6 +21,7 @@ export default async function ClassworkPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
+      <RequireAuth />
       <PageHeader
         eyebrow={<Badge tone="blue">Classwork</Badge>}
         title={classwork.title}
@@ -43,7 +45,7 @@ export default async function ClassworkPage({
           instructions="Write your code, run it to preview, then submit for friendly feedback."
           requirements={classwork.requirements ?? []}
           starterCode={classwork.starterCode ?? ""}
-          submission={apiRes.ok ? { userId: "demo-user", classworkId: id } : undefined}
+          submission={apiRes.ok ? { classworkId: id } : undefined}
           onCompleteHref="/dashboard"
           onCompleteLabel="Continue"
         />

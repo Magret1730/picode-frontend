@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { apiUserProgress } from "@/lib/api/picode";
 import { mockCourses } from "@/lib/mock-data";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 
 type BadgeDef = {
   id: string;
@@ -48,6 +49,8 @@ function getEncouragement(xpTotal: number) {
 }
 
 export default async function ProgressPage() {
+  // Progress page shows example progress when offline.
+  // When authenticated progress is wired end-to-end, this should use the real user id.
   const apiRes = await apiUserProgress("demo-user");
   const offline = !apiRes.ok;
 
@@ -96,6 +99,7 @@ export default async function ProgressPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <RequireAuth />
       <PageHeader
         title="Progress"
         description="XP, badges, and completed work — all in one place."

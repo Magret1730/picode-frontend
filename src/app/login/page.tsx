@@ -6,6 +6,7 @@ export default function LoginPage() {
       title="Welcome back!"
       subtitle="Log in to continue your coding adventure."
       submitLabel="Log in"
+      mode="login"
     />
   );
 }

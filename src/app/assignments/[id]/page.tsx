@@ -6,6 +6,7 @@ import { CodePlayground } from "@/components/playground/CodePlayground";
 import { getAssignment } from "@/lib/mock-data";
 import { Card } from "@/components/ui/Card";
 import { apiAssignment } from "@/lib/api/picode";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 
 export default async function AssignmentPage({
   params,
@@ -20,6 +21,7 @@ export default async function AssignmentPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
+      <RequireAuth />
       <PageHeader
         title={assignment.title}
         eyebrow={<Badge tone="pink">Final assignment</Badge>}
@@ -54,7 +56,7 @@ export default async function AssignmentPage({
             assignment.starterCode ??
             `<!doctype html>\n<html>\n  <head>\n    <title>${assignment.title}</title>\n  </head>\n  <body>\n  </body>\n</html>`
           }
-          submission={apiRes.ok ? { userId: "demo-user", assignmentId: id } : undefined}
+          submission={apiRes.ok ? { assignmentId: id } : undefined}
           onCompleteHref="/dashboard"
           onCompleteLabel="Back to dashboard"
         />
