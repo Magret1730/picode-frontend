@@ -54,6 +54,9 @@ export default async function AssignmentPage({
             assignment.starterCode ??
             `<!doctype html>\n<html>\n  <head>\n    <title>${assignment.title}</title>\n  </head>\n  <body>\n  </body>\n</html>`
           }
+          submission={{ userId: "user_demo", assignmentId: id }}
+          onCompleteHref="/dashboard"
+          onCompleteLabel="Back to dashboard"
         />
       </div>
     </div>

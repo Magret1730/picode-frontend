@@ -41,8 +41,11 @@ export default async function ClassworkPage({
         <CodePlayground
           title="Code playground"
           instructions="Write your code, run it to preview, then submit for friendly feedback."
-          requirements={classwork.requirements}
-          starterCode={classwork.starterCode}
+          requirements={classwork.requirements ?? []}
+          starterCode={classwork.starterCode ?? ""}
+          submission={{ userId: "user_demo", classworkId: id }}
+          onCompleteHref="/dashboard"
+          onCompleteLabel="Continue"
         />
       </div>
     </div>

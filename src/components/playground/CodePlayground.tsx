@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
+import { apiRunSubmissionTests } from "@/lib/api/picode";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -19,6 +20,9 @@ export function CodePlayground({
   requirements,
   starterCode,
   languageLabel = "HTML + CSS",
+  submission,
+  onCompleteHref,
+  onCompleteLabel = "Continue",
   className,
 }: {
   title: string;
@@ -26,12 +30,19 @@ export function CodePlayground({
   requirements: string[];
   starterCode: string;
   languageLabel?: string;
+  submission: { userId: string } & (
+    | { classworkId: string; assignmentId?: never }
+    | { assignmentId: string; classworkId?: never }
+  );
+  onCompleteHref?: string;
+  onCompleteLabel?: string;
   className?: string;
 }) {
   const [code, setCode] = useState(starterCode);
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [results, setResults] = useState<TestResult[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const iframeDoc = useMemo(() => {
     if (!srcDoc) return "";
@@ -42,21 +53,32 @@ export function CodePlayground({
   function runCode() {
     setSrcDoc(code);
     setResults(null);
+    setSubmitError(null);
   }
 
   async function submit() {
     setSubmitting(true);
     try {
-      // MVP: local, safe DOM-based checks (no random failures).
-      const mocked: TestResult[] = runMvpChecks(code, requirements);
-      await new Promise((r) => setTimeout(r, 500));
-      setResults(mocked);
+      setSubmitError(null);
+
+      const res = await apiRunSubmissionTests({
+        ...submission,
+        submittedCode: code,
+      });
+
+      if (!res.ok) {
+        setSubmitError(res.message || "We couldn't run checks right now.");
+        return;
+      }
+
+      setResults(res.data.results);
     } finally {
       setSubmitting(false);
     }
   }
 
   const passed = results ? results.every((r) => r.passed) : null;
+  const xpEarned = passed ? 10 : 0;
 
   return (
     <div className={cn("grid gap-4 lg:grid-cols-2", className)}>
@@ -102,6 +124,17 @@ export function CodePlayground({
           </Button>
         </div>
 
+        {submitError ? (
+          <div className="rounded-3xl border border-border bg-surface-2 p-4">
+            <p className="text-sm font-semibold">Couldn’t run checks</p>
+            <p className="mt-1 text-sm text-muted-foreground">{submitError}</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Tip: make sure the backend is running and `NEXT_PUBLIC_API_URL` is
+              set.
+            </p>
+          </div>
+        ) : null}
+
         {results ? (
           <div className="rounded-3xl border border-border bg-surface-2 p-4">
             <p className="text-sm font-semibold text-muted-foreground">
@@ -125,6 +158,37 @@ export function CodePlayground({
                 </div>
               ))}
             </div>
+
+            {passed ? (
+              <div className="mt-4 rounded-3xl border border-border bg-card p-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-lg font-extrabold">
+                      🎉 You did it! Great job!
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      You earned{" "}
+                      <span className="font-semibold text-foreground">
+                        +{xpEarned} XP
+                      </span>
+                      .
+                    </p>
+                  </div>
+                  <Button href={onCompleteHref ?? "/dashboard"}>
+                    {onCompleteLabel}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-3xl border border-border bg-card p-4">
+                <p className="font-semibold">You’re super close!</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Fix one hint at a time, then press{" "}
+                  <span className="font-semibold text-foreground">Submit</span>{" "}
+                  again.
+                </p>
+              </div>
+            )}
           </div>
         ) : (
           <div className="rounded-3xl border border-border bg-surface-2 p-4">
@@ -187,76 +251,5 @@ export function CodePlayground({
       </Card>
     </div>
   );
-}
-
-function runMvpChecks(submittedCode: string, requirements: string[]): TestResult[] {
-  const doc = parseHtmlForChecks(submittedCode);
-
-  function has(sel: string) {
-    return Boolean(doc.querySelector(sel));
-  }
-  function hasAttr(sel: string, attr: string) {
-    const el = doc.querySelector(sel);
-    return Boolean(el?.getAttribute(attr)?.trim());
-  }
-  function textNotEmpty(sel: string) {
-    const el = doc.querySelector(sel);
-    return Boolean((el?.textContent ?? "").trim());
-  }
-  function bodyNotEmpty() {
-    return Boolean((doc.body?.textContent ?? "").trim());
-  }
-
-  return requirements.map((r) => {
-    const key = r.toLowerCase();
-
-    // Map the common Picode MVP requirements to DOM checks.
-    const check =
-      key.includes("title") ? { ok: has("title") || doc.title.trim().length > 0, name: "Page title" } :
-      key.includes("main heading") || key.includes("(h1)") || key.includes("heading (h1)") || key.includes("one main heading") || key.includes("add a heading")
-        ? { ok: has("h1") && textNotEmpty("h1"), name: "Heading" }
-        : key.includes("smaller heading") || key.includes("(h2)") || key.includes("h2")
-          ? { ok: has("h2") && textNotEmpty("h2"), name: "Smaller heading" }
-          : key.includes("paragraph") || key.includes("(p)")
-            ? { ok: doc.querySelectorAll("p").length > 0 && bodyNotEmpty(), name: "Paragraph" }
-            : key.includes("image") || key.includes("(img)")
-              ? { ok: has("img") && hasAttr("img", "src"), name: "Image" }
-              : key.includes("alt")
-                ? { ok: has("img") && hasAttr("img", "alt"), name: "Image alt text" }
-                : key.includes("link") || key.includes("(a)") || key.includes("href")
-                  ? { ok: has("a") && hasAttr("a", "href"), name: "Link" }
-                  : key.includes("unordered list") || key.includes("(ul)")
-                    ? { ok: has("ul"), name: "Unordered list" }
-                    : key.includes("ordered list") || key.includes("(ol)")
-                      ? { ok: has("ol"), name: "Ordered list" }
-                      : key.includes("list") || key.includes("hobbies")
-                        ? { ok: has("ul") || has("ol"), name: "List" }
-                        : { ok: bodyNotEmpty(), name: "Content" };
-
-    return {
-      name: r,
-      passed: check.ok,
-      message: check.ok
-        ? "Great! That part looks good."
-        : "Almost there! Double-check this requirement.",
-    };
-  });
-}
-
-function parseHtmlForChecks(submitted: string): Document {
-  const trimmed = submitted.trim();
-  const isFullDoc =
-    /<html[\s>]/i.test(trimmed) ||
-    /<!doctype[\s>]/i.test(trimmed) ||
-    /<head[\s>]/i.test(trimmed) ||
-    /<body[\s>]/i.test(trimmed);
-
-  const html = isFullDoc
-    ? trimmed
-    : `<!doctype html><html><head></head><body>${trimmed}</body></html>`;
-
-  // DOMParser does NOT execute scripts.
-  const parser = new DOMParser();
-  return parser.parseFromString(html, "text/html");
 }
 

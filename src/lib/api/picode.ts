@@ -39,3 +39,22 @@ export async function apiAssignment(assignmentId: string) {
   );
 }
 
+export type RunTestsRequest = {
+  userId: string;
+  classworkId?: string;
+  assignmentId?: string;
+  submittedCode: string;
+};
+
+export type RunTestsResponse = {
+  passed: boolean;
+  results: Array<{ name: string; passed: boolean; message: string }>;
+};
+
+export async function apiRunSubmissionTests(body: RunTestsRequest) {
+  return await fetchJson<RunTestsResponse>("/submissions/run-tests", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
