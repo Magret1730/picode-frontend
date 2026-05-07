@@ -26,7 +26,7 @@ export function PageHeader({
           {title}
         </h1>
         {description ? (
-          <p className="mt-1 text-zinc-700">{description}</p>
+          <p className="mt-1 text-muted-foreground">{description}</p>
         ) : null}
       </div>
       {actions ? <div className="flex gap-2">{actions}</div> : null}

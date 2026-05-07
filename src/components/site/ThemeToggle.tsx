@@ -21,7 +21,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         className,
       )}
       aria-label={mounted ? (isDark ? "Switch to light mode" : "Switch to dark mode") : "Toggle theme"}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={() => setTheme(current === "dark" ? "light" : "dark")}
     >
       {/* Avoid hydration mismatch by rendering a neutral icon before mount */}
       {!mounted ? (

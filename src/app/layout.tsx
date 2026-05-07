@@ -26,7 +26,7 @@ export default function RootLayout({
       className={`${plusJakarta.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[color:var(--bg)] text-[color:var(--text)]">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

@@ -27,7 +27,7 @@ export function Button({
     primary:
       "bg-[color:var(--brand-blue)] text-white shadow-[var(--shadow-sm)] hover:brightness-95",
     secondary:
-      "bg-[color:var(--brand-yellow)] text-zinc-900 shadow-[var(--shadow-sm)] hover:brightness-95",
+      "bg-[color:var(--brand-yellow)] text-foreground shadow-[var(--shadow-sm)] hover:brightness-95",
     ghost:
       "bg-transparent text-[color:var(--text)] hover:bg-[color:var(--surface-2)]",
   };
