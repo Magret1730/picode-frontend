@@ -21,6 +21,18 @@ export type Assignment = {
   id: string;
   courseSlug: string;
   title: string;
+  instructions?: string;
+  requirements?: string[];
+  starterCode?: string;
+};
+
+export type Classwork = {
+  id: string;
+  lessonId: string;
+  title: string;
+  instructions: string;
+  requirements: string[];
+  starterCode: string;
 };
 
 export const mockCourses: Course[] = [
@@ -198,10 +210,302 @@ export const mockLessons: Lesson[] = [
 ];
 
 export const mockAssignments: Assignment[] = [
-  { id: "as_html_1", courseSlug: "html-beginner", title: "My Favorite Animal Page" },
-  { id: "as_html_2", courseSlug: "html-beginner", title: "All About Me Page" },
-  { id: "as_css_1", courseSlug: "css-beginner", title: "Superhero Profile Page" },
-  { id: "as_css_2", courseSlug: "css-beginner", title: "My Dream Bedroom" },
+  {
+    id: "as_html_1",
+    courseSlug: "html-beginner",
+    title: "My Favorite Animal Page",
+    instructions:
+      "Create a webpage about your favorite animal. Add a heading, an image with alt text, and a link to learn more.",
+    requirements: [
+      "Add a main heading (h1)",
+      "Add an image (img) with alt text",
+      "Add at least one paragraph (p)",
+      "Add a link (a) with href",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title>My Favorite Animal</title>
+  </head>
+  <body>
+  </body>
+</html>`,
+  },
+  {
+    id: "as_html_2",
+    courseSlug: "html-beginner",
+    title: "All About Me Page",
+    instructions:
+      "Create an About Me page with headings and paragraphs. Keep it clear and friendly!",
+    requirements: [
+      "Add one main heading (h1)",
+      "Add at least one smaller heading (h2)",
+      "Add at least two paragraphs (p)",
+      "Make sure your text is not empty",
+    ],
+    starterCode: `<h1>About Me</h1>
+<h2>My Story</h2>
+<p></p>
+<p></p>`,
+  },
+  {
+    id: "as_css_1",
+    courseSlug: "css-beginner",
+    title: "Superhero Profile Page",
+    instructions:
+      "Create a superhero profile page and style it with CSS. Make it bold and readable.",
+    requirements: [
+      "Style the heading (color/size/alignment)",
+      "Style a paragraph (color and font-family)",
+      "Add a bordered container with padding",
+      "Use a background color",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title>Superhero Profile</title>
+  </head>
+  <body>
+    <h1 style=""></h1>
+    <p style=""></p>
+    <div class="container" style="">
+    </div>
+  </body>
+</html>`,
+  },
+  {
+    id: "as_css_2",
+    courseSlug: "css-beginner",
+    title: "My Dream Bedroom",
+    instructions:
+      "Describe your dream bedroom and style it with soft colors, borders, and spacing.",
+    requirements: [
+      "Add a heading (h1) and paragraph (p)",
+      "Use at least one background color",
+      "Add a border around content",
+      "Add spacing with padding and margin",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title>My Dream Bedroom</title>
+  </head>
+  <body style="">
+    <div class="container" style="">
+      <h1 style=""></h1>
+      <p style=""></p>
+    </div>
+  </body>
+</html>`,
+  },
+];
+
+export const mockClassworks: Classwork[] = [
+  {
+    id: "cw_html_1",
+    lessonId: "lesson_html_1",
+    title: "Create your first webpage.",
+    instructions:
+      "Create a basic HTML page with a title and some text in the body.",
+    requirements: [
+      "Add a page title (title tag)",
+      "Add your name inside the body",
+      "Add one sentence about yourself",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+  </body>
+</html>`,
+  },
+  {
+    id: "cw_html_2",
+    lessonId: "lesson_html_2",
+    title: "Create an About Me page.",
+    instructions: "Use headings and paragraphs to write a simple About Me page.",
+    requirements: [
+      "Add one main heading (h1)",
+      "Add one smaller heading (h2)",
+      "Add two paragraphs (p) about yourself",
+    ],
+    starterCode: `<h1></h1>
+<h2></h2>
+<p></p>
+<p></p>`,
+  },
+  {
+    id: "cw_html_3",
+    lessonId: "lesson_html_3",
+    title: "Create a favorite animal page.",
+    instructions: "Add a heading, an image, a paragraph, and a link.",
+    requirements: [
+      "Add a heading (h1)",
+      "Add an image (img)",
+      "Add image alt text (alt)",
+      "Add a paragraph (p)",
+      "Add a link (a) with href",
+    ],
+    starterCode: `<h1></h1>
+<img src="" alt="" />
+<p></p>
+<a href=""></a>`,
+  },
+  {
+    id: "cw_html_4",
+    lessonId: "lesson_html_4",
+    title: "Create a My Favorites page.",
+    instructions:
+      "Create a page with an unordered list and an ordered list.",
+    requirements: [
+      "Add a heading (h1)",
+      "Add an unordered list (ul) of 3 favorite foods",
+      "Add an ordered list (ol) of 3 morning steps",
+    ],
+    starterCode: `<h1></h1>
+<ul>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+<ol>
+  <li></li>
+  <li></li>
+  <li></li>
+</ol>`,
+  },
+  {
+    id: "cw_html_5",
+    lessonId: "lesson_html_5",
+    title: "Build a mini profile page.",
+    instructions:
+      "Build a mini profile page that combines the HTML elements you learned.",
+    requirements: [
+      "Add a title (title tag)",
+      "Add your name as the main heading (h1)",
+      "Add a paragraph (p) about yourself",
+      "Add an image (img) with alt text",
+      "Add a list (ul or ol) of 3 hobbies",
+      "Add a link (a) with href",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <h1></h1>
+    <p></p>
+    <img src="" alt="" />
+    <ul>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <a href=""></a>
+  </body>
+</html>`,
+  },
+  {
+    id: "cw_css_1",
+    lessonId: "lesson_css_1",
+    title: "Create a colorful webpage.",
+    instructions:
+      "Add inline CSS styles to make your heading and paragraph colorful.",
+    requirements: [
+      "Add a heading (h1)",
+      "Change the heading color",
+      "Add a paragraph (p)",
+      "Change the paragraph background color",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title>Colorful Page</title>
+  </head>
+  <body>
+    <h1 style=""></h1>
+    <p style=""></p>
+  </body>
+</html>`,
+  },
+  {
+    id: "cw_css_2",
+    lessonId: "lesson_css_2",
+    title: "Style an About Me page.",
+    instructions: "Use CSS text styles to make your page look polished.",
+    requirements: [
+      "Change the heading font-size",
+      "Center the heading (text-align)",
+      "Change paragraph text color",
+      "Use a different font-family",
+    ],
+    starterCode: `<h1 style=""></h1>
+<p style=""></p>`,
+  },
+  {
+    id: "cw_css_3",
+    lessonId: "lesson_css_3",
+    title: "Create a profile card.",
+    instructions: "Style a card using border, padding, margin, and width.",
+    requirements: ["Add a border", "Add padding", "Add margin", "Set a width"],
+    starterCode: `<div class="card" style="">
+  <h1></h1>
+  <p></p>
+</div>`,
+  },
+  {
+    id: "cw_css_4",
+    lessonId: "lesson_css_4",
+    title: "Style a favorite animal page.",
+    instructions: "Add a background color and style an image.",
+    requirements: [
+      "Add a background color",
+      "Change image width",
+      "Add rounded corners (border-radius)",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title>Favorite Animal</title>
+  </head>
+  <body style="">
+    <h1></h1>
+    <img src="" alt="" style="" />
+    <p></p>
+  </body>
+</html>`,
+  },
+  {
+    id: "cw_css_5",
+    lessonId: "lesson_css_5",
+    title: "Build a mini profile webpage.",
+    instructions:
+      "Build a mini profile webpage with a border, background, and spacing.",
+    requirements: [
+      "Styled heading",
+      "Styled paragraph",
+      "Styled image",
+      "Border around content",
+      "Background color",
+      "Proper spacing (padding/margin)",
+    ],
+    starterCode: `<!doctype html>
+<html>
+  <head>
+    <title>Mini Profile</title>
+  </head>
+  <body style="">
+    <div class="container" style="">
+      <h1 style=""></h1>
+      <p style=""></p>
+      <img src="" alt="" style="" />
+    </div>
+  </body>
+</html>`,
+  },
 ];
 
 export function getCourseBySlug(slug: string): Course | undefined {
@@ -236,5 +540,9 @@ export function getAssignmentsForCourse(courseSlug: string): Assignment[] {
 
 export function getAssignment(id: string): Assignment | undefined {
   return mockAssignments.find((a) => a.id === id);
+}
+
+export function getClasswork(id: string): Classwork | undefined {
+  return mockClassworks.find((c) => c.id === id);
 }
 
