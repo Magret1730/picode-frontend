@@ -1,35 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --picode-yellow: #ffd84d;
-  --picode-blue: #4d9dff;
-  --picode-pink: #ff5db1;
-  --picode-mint: #31d6c2;
+  /* Surfaces (light) */
+  --bg: #f7f8fc;
+  --surface-2: #eef2ff;
+  --card: #ffffff;
+  --text: #111827;
+  --text-2: #4b5563;
+  --border: #e5e7eb;
+
+  /* Brand */
+  --brand-blue: #4f8cff;
+  --brand-yellow: #ffd966;
+  --brand-green: #4ade80;
+  --brand-pink: #f472b6;
+
+  /* Effects */
+  --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+  --shadow-sm: 0 6px 16px rgba(17, 24, 39, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Dark mode tokens */
+.dark {
+  --bg: #0f172a;
+  --surface-2: #111827;
+  --card: #1e293b;
+  --text: #f8fafc;
+  --text-2: #cbd5e1;
+  --border: #334155;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --shadow: 0 16px 40px rgba(2, 6, 23, 0.45);
+  --shadow-sm: 0 10px 22px rgba(2, 6, 23, 0.35);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 /* Fun selection color */
 ::selection {
-  background: color-mix(in oklab, var(--picode-yellow) 55%, white);
+  background: color-mix(in oklab, var(--brand-yellow) 55%, white);
 }

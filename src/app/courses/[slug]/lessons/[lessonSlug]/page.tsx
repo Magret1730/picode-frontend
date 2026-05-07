@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { getLesson } from "@/lib/mock-data";
 
 export default async function LessonPage({
@@ -14,24 +15,24 @@ export default async function LessonPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold">{lesson.title}</h1>
-          <p className="mt-1 text-zinc-700">{lesson.goal}</p>
-        </div>
-        <Button variant="secondary" href={`/courses/${slug}`}>
-          Back to course
-        </Button>
-      </div>
+      <PageHeader
+        title={lesson.title}
+        description={lesson.goal}
+        actions={
+          <Button variant="secondary" href={`/courses/${slug}`}>
+            Back to course
+          </Button>
+        }
+      />
 
       <Card className="mt-6">
         <h2 className="text-xl font-extrabold">Explanation</h2>
-        <p className="mt-2 text-zinc-700">{lesson.explanation}</p>
+        <p className="mt-2 text-[color:var(--text-2)]">{lesson.explanation}</p>
 
         {lesson.exampleCode ? (
           <>
             <h3 className="mt-6 text-lg font-extrabold">Example</h3>
-            <pre className="mt-2 overflow-auto rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm">
+            <pre className="mt-2 overflow-auto rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-2)] p-4 text-sm text-[color:var(--text)]">
               <code>{lesson.exampleCode}</code>
             </pre>
           </>

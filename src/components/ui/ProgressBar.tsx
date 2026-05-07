@@ -14,13 +14,13 @@ export function ProgressBar({
     <div className={cn("w-full", className)}>
       {label ? (
         <div className="mb-2 flex items-center justify-between text-sm">
-          <span className="font-semibold text-zinc-700">{label}</span>
-          <span className="font-extrabold text-zinc-900">{safe}%</span>
+          <span className="font-semibold text-[color:var(--text-2)]">{label}</span>
+          <span className="font-extrabold text-[color:var(--text)]">{safe}%</span>
         </div>
       ) : null}
-      <div className="h-3 w-full overflow-hidden rounded-full bg-zinc-100">
+      <div className="h-3 w-full overflow-hidden rounded-full bg-[color:var(--surface-2)]">
         <div
-          className="h-full rounded-full bg-[color:var(--picode-blue)]"
+          className="h-full rounded-full bg-[color:var(--brand-blue)]"
           style={{ width: `${safe}%` }}
         />
       </div>
