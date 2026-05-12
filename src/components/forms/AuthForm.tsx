@@ -25,7 +25,6 @@ export function AuthForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [ageGroup, setAgeGroup] = useState("8-10");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -54,7 +53,6 @@ export function AuthForm({
           name: name.trim(),
           email: trimmedEmail,
           password,
-          ageGroup,
         });
       } else {
         await login({ email: trimmedEmail, password });
@@ -74,24 +72,17 @@ export function AuthForm({
     <div className="mx-auto max-w-md px-4 py-10">
       <Card>
         <h1 className="text-2xl font-extrabold">{title}</h1>
-        <p className="mt-1 text-sm text-[color:var(--text-2)]">{subtitle}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
 
         <form className="mt-6 space-y-4" onSubmit={onSubmit}>
           {mode === "register" ? (
-            <>
-              <Field
-                label="Name"
-                value={name}
-                onChange={setName}
-                placeholder="Demo Student"
-              />
-              <Field
-                label="Age group"
-                value={ageGroup}
-                onChange={setAgeGroup}
-                placeholder="8-10"
-              />
-            </>
+            <Field
+              label="Name"
+              value={name}
+              onChange={setName}
+              placeholder="Your display name"
+              autoComplete="name"
+            />
           ) : null}
 
           <Field
@@ -99,14 +90,16 @@ export function AuthForm({
             type="email"
             value={email}
             onChange={setEmail}
-            placeholder="student@example.com"
+            placeholder="you@example.com"
+            autoComplete="email"
           />
           <Field
             label="Password"
             type="password"
             value={password}
             onChange={setPassword}
-            placeholder="••••••••"
+            placeholder="Enter your password"
+            autoComplete={mode === "register" ? "new-password" : "current-password"}
           />
 
           {error ? (
@@ -120,7 +113,7 @@ export function AuthForm({
             {submitting ? "Working..." : submitLabel}
           </Button>
 
-          <p className="text-center text-xs text-[color:var(--text-2)]">
+          <p className="text-center text-xs text-muted-foreground">
             {pathname === "/login" ? (
               <>
                 New here?{" "}
@@ -149,26 +142,26 @@ function Field({
   placeholder,
   value,
   onChange,
+  autoComplete,
 }: {
   label: string;
   type?: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
+  autoComplete?: string;
 }) {
   return (
     <label className="block">
-      <span className="text-sm font-semibold text-[color:var(--text-2)]">
-        {label}
-      </span>
+      <span className="text-sm font-semibold text-muted-foreground">{label}</span>
       <input
         type={type ?? "text"}
         placeholder={placeholder}
         value={value}
+        autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--card)] px-3 py-2 text-sm text-[color:var(--text)] outline-none placeholder:text-[color:var(--text-2)] focus:ring-2 focus:ring-[color:var(--brand-blue)]"
+        className="mt-1.5 w-full rounded-2xl border border-border bg-card px-3.5 py-2.5 text-sm text-foreground shadow-sm transition-[color,box-shadow,border-color] placeholder:text-muted-foreground placeholder:opacity-60 focus-visible:border-brand-blue/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-brand-blue/40"
       />
     </label>
   );
 }
-

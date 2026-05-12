@@ -5,7 +5,7 @@ export type AuthUser = {
   name: string;
   email: string;
   role: "student" | "admin";
-  ageGroup: string;
+  ageGroup: string | null;
 };
 
 export type AuthResponse = {
@@ -17,7 +17,6 @@ export async function apiRegister(body: {
   name: string;
   email: string;
   password: string;
-  ageGroup: string;
 }) {
   return await fetchJson<AuthResponse>("/auth/register", {
     method: "POST",

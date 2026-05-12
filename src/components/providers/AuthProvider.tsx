@@ -19,7 +19,6 @@ type AuthState = {
     name: string;
     email: string;
     password: string;
-    ageGroup: string;
   }) => Promise<void>;
   logout: () => void;
 };
@@ -86,7 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       name: string;
       email: string;
       password: string;
-      ageGroup: string;
     }) => {
       const res = await apiRegister(input);
       if (!res.ok) throw new Error(res.message || "Register failed");
