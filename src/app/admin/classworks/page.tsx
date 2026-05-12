@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { adminApi, type AdminClassworkRow } from "@/lib/admin/api";
+import { AdminGuard } from "@/components/auth/AdminGuard";
 
 function requirementsToTextarea(req: unknown): string {
   if (Array.isArray(req)) return req.map(String).join("\n");
@@ -111,8 +111,8 @@ export default function AdminClassworksPage() {
   }
 
   return (
+    <AdminGuard>
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <RequireAdmin />
       <PageHeader
         eyebrow={<Badge tone="zinc">Admin</Badge>}
         title="Classworks"
@@ -253,6 +253,7 @@ export default function AdminClassworksPage() {
         </div>
       </div>
     </div>
+    </AdminGuard>
   );
 }
 

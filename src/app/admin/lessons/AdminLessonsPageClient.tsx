@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { adminApi, type AdminLessonRow } from "@/lib/admin/api";
 
@@ -92,7 +91,6 @@ export default function AdminLessonsPageClient() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <RequireAdmin />
       <PageHeader
         eyebrow={<Badge tone="zinc">Admin</Badge>}
         title="Lessons"

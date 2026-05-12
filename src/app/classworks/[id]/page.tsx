@@ -6,7 +6,7 @@ import { CodePlayground } from "@/components/playground/CodePlayground";
 import { getClasswork } from "@/lib/mock-data";
 import { notFound } from "next/navigation";
 import { apiClasswork } from "@/lib/api/picode";
-import { RequireAuth } from "@/components/auth/RequireAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default async function ClassworkPage({
   params,
@@ -20,8 +20,8 @@ export default async function ClassworkPage({
   const offline = !apiRes.ok;
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <RequireAuth />
       <PageHeader
         eyebrow={<Badge tone="blue">Classwork</Badge>}
         title={classwork.title}
@@ -51,6 +51,7 @@ export default async function ClassworkPage({
         />
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 

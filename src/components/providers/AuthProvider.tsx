@@ -13,7 +13,11 @@ import { apiLogin, apiMe, apiRegister, type AuthUser } from "@/lib/api/auth";
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
+  /** True until localStorage + optional /auth/me bootstrap finishes */
   loading: boolean;
+  isAuthLoading: boolean;
+  /** True only after bootstrap finished and user is present */
+  isAuthenticated: boolean;
   login: (input: { email: string; password: string }) => Promise<void>;
   register: (input: {
     name: string;
@@ -96,10 +100,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const value = useMemo<AuthState>(
-    () => ({ user, token, loading, login, register, logout }),
-    [user, token, loading, login, register, logout],
-  );
+  const value = useMemo<AuthState>(() => {
+    const isAuthLoading = loading;
+    const isAuthenticated = !loading && !!user;
+    return {
+      user,
+      token,
+      loading,
+      isAuthLoading,
+      isAuthenticated,
+      login,
+      register,
+      logout,
+    };
+  }, [user, token, loading, login, register, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

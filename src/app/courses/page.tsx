@@ -5,7 +5,8 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { mockCourses } from "@/lib/mock-data";
 import { apiCourses } from "@/lib/api/picode";
 import { Badge } from "@/components/ui/Badge";
-import { RequireAuth } from "@/components/auth/RequireAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ProtectedHrefButton } from "@/components/auth/ProtectedHrefButton";
 
 export default function CoursesPage() {
   // Server component: try API first, fall back to mock.
@@ -13,18 +14,19 @@ export default function CoursesPage() {
   const coursesPromise = apiCourses();
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <RequireAuth />
       <PageHeader
         title="Courses"
         description="Choose your adventure. Start with HTML, then add CSS magic."
-        actions={<Button variant="secondary" href="/dashboard">Dashboard</Button>}
+        actions={<ProtectedHrefButton variant="secondary" href="/dashboard">Dashboard</ProtectedHrefButton>}
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <CoursesGrid coursesPromise={coursesPromise} />
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 

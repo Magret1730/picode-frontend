@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { apiUserProgress } from "@/lib/api/picode";
 import { mockCourses } from "@/lib/mock-data";
-import { RequireAuth } from "@/components/auth/RequireAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 type BadgeDef = {
   id: string;
@@ -98,8 +98,8 @@ export default async function ProgressPage() {
   });
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <RequireAuth />
       <PageHeader
         title="Progress"
         description="XP, badges, and completed work — all in one place."
@@ -246,6 +246,7 @@ export default async function ProgressPage() {
         </Card>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 

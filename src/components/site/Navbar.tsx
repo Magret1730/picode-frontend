@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
+import { AuthAwareNavLink } from "@/components/auth/AuthAwareNavLink";
 import { useAuth } from "@/components/providers/AuthProvider";
 
 export function Navbar() {
@@ -23,18 +24,18 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-2">
-          <Link
+          <AuthAwareNavLink
             href="/courses"
             className="rounded-2xl px-3 py-2 text-sm font-semibold text-[color:var(--text-2)] hover:bg-[color:var(--surface-2)]"
           >
             Courses
-          </Link>
-          <Link
+          </AuthAwareNavLink>
+          <AuthAwareNavLink
             href="/progress"
             className="rounded-2xl px-3 py-2 text-sm font-semibold text-[color:var(--text-2)] hover:bg-[color:var(--surface-2)]"
           >
             Progress
-          </Link>
+          </AuthAwareNavLink>
           <ThemeToggle className="ml-1" />
           {loading ? null : user ? (
             <>

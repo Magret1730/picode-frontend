@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthAwareNavLink } from "@/components/auth/AuthAwareNavLink";
 
 export function Footer() {
   return (
@@ -14,12 +15,12 @@ export function Footer() {
         <div className="text-sm text-[color:var(--text-2)] sm:text-right">
           <p className="font-semibold text-[color:var(--text)]">Quick links</p>
           <div className="mt-2 flex flex-wrap gap-2 sm:justify-end">
-            <Link
+            <AuthAwareNavLink
               className="rounded-2xl px-3 py-2 hover:bg-[color:var(--surface-2)]"
               href="/courses"
             >
               Courses
-            </Link>
+            </AuthAwareNavLink>
             <Link
               className="rounded-2xl px-3 py-2 hover:bg-[color:var(--surface-2)]"
               href="/login"

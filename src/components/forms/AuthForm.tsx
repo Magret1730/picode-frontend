@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { getSafeRedirectPath } from "@/lib/safe-redirect";
 
 export function AuthForm({
   title,
@@ -20,6 +21,7 @@ export function AuthForm({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { login, register } = useAuth();
 
   const [name, setName] = useState("");
@@ -57,7 +59,10 @@ export function AuthForm({
       } else {
         await login({ email: trimmedEmail, password });
       }
-      router.push("/dashboard");
+      const rawRedirect =
+        searchParams.get("redirect") ?? searchParams.get("next");
+      const nextPath = getSafeRedirectPath(rawRedirect) ?? "/dashboard";
+      router.push(nextPath);
       router.refresh();
     } catch (err) {
       const msg =
@@ -117,14 +122,28 @@ export function AuthForm({
             {pathname === "/login" ? (
               <>
                 New here?{" "}
-                <Link className="underline" href="/register">
+                <Link
+                  className="underline"
+                  href={
+                    searchParams.toString()
+                      ? `/register?${searchParams.toString()}`
+                      : "/register"
+                  }
+                >
                   Create an account
                 </Link>
               </>
             ) : (
               <>
                 Already have an account?{" "}
-                <Link className="underline" href="/login">
+                <Link
+                  className="underline"
+                  href={
+                    searchParams.toString()
+                      ? `/login?${searchParams.toString()}`
+                      : "/login"
+                  }
+                >
                   Log in
                 </Link>
               </>

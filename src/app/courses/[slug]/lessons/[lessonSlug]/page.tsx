@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getLesson } from "@/lib/mock-data";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default async function LessonPage({
   params,
@@ -14,6 +15,7 @@ export default async function LessonPage({
   if (!lesson) return notFound();
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-4xl px-4 py-10">
       <PageHeader
         title={lesson.title}
@@ -50,6 +52,7 @@ export default async function LessonPage({
         </div>
       </Card>
     </div>
+    </ProtectedRoute>
   );
 }
 

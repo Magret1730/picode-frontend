@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { RequireAdmin } from "@/components/auth/RequireAdmin";
+import { AdminGuard } from "@/components/auth/AdminGuard";
 
 export default function AdminHomePage() {
   return (
+    <AdminGuard>
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <RequireAdmin />
       <PageHeader
         eyebrow={<Badge tone="zinc">Admin</Badge>}
         title="Admin"
@@ -51,6 +51,7 @@ export default function AdminHomePage() {
         </Card>
       </div>
     </div>
+    </AdminGuard>
   );
 }
 

@@ -11,7 +11,7 @@ import {
   getLessonsForCourse,
 } from "@/lib/mock-data";
 import { apiCourse, apiLessonsForCourse } from "@/lib/api/picode";
-import { RequireAuth } from "@/components/auth/RequireAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default async function CourseDetailPage({
   params,
@@ -44,8 +44,8 @@ export default async function CourseDetailPage({
   const offline = !apiCourseRes.ok || !apiLessonsRes.ok;
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <RequireAuth />
       <PageHeader
         title={course.title}
         description={course.description}
@@ -147,6 +147,7 @@ export default async function CourseDetailPage({
         )}
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 

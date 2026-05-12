@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getLessonById, getNextLesson } from "@/lib/mock-data";
 import { apiLessonById } from "@/lib/api/picode";
-import { RequireAuth } from "@/components/auth/RequireAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default async function LessonByIdPage({
   params,
@@ -33,8 +33,8 @@ export default async function LessonByIdPage({
   const offline = !apiRes.ok;
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <RequireAuth />
       <PageHeader
         eyebrow={<Badge tone="blue">Lesson</Badge>}
         title={lesson.title}
@@ -100,6 +100,7 @@ export default async function LessonByIdPage({
         </div>
       </Card>
     </div>
+    </ProtectedRoute>
   );
 }
 

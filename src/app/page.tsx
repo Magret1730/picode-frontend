@@ -1,4 +1,5 @@
 import { HeroPlaygroundComposition } from "@/components/landing/HeroPlaygroundComposition";
+import { ProtectedHrefButton } from "@/components/auth/ProtectedHrefButton";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -27,13 +28,13 @@ export default function Home() {
                 <Button className="w-full sm:w-auto sm:min-w-[11rem]" href="/register">
                   Start learning
                 </Button>
-                <Button
+                <ProtectedHrefButton
                   className="w-full sm:w-auto sm:min-w-[11rem]"
                   variant="secondary"
                   href="/courses"
                 >
                   Explore courses
-                </Button>
+                </ProtectedHrefButton>
               </div>
             </div>
 
@@ -54,9 +55,9 @@ export default function Home() {
               Learn by building. Every step gives friendly feedback.
             </p>
           </div>
-          <Button variant="secondary" href="/courses">
+          <ProtectedHrefButton variant="secondary" href="/courses">
             See the lessons
-          </Button>
+          </ProtectedHrefButton>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -104,7 +105,9 @@ export default function Home() {
               <li>• Lists</li>
             </ul>
             <div className="mt-5">
-              <Button href="/courses/html-beginner">Preview HTML</Button>
+              <ProtectedHrefButton href="/courses/html-beginner">
+                Preview HTML
+              </ProtectedHrefButton>
             </div>
           </Card>
 
@@ -122,7 +125,9 @@ export default function Home() {
               <li>• Backgrounds & images</li>
             </ul>
             <div className="mt-5">
-              <Button href="/courses/css-beginner">Preview CSS</Button>
+              <ProtectedHrefButton href="/courses/css-beginner">
+                Preview CSS
+              </ProtectedHrefButton>
             </div>
           </Card>
         </div>
@@ -209,9 +214,9 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button href="/register">Start learning</Button>
-              <Button variant="secondary" href="/courses">
+              <ProtectedHrefButton variant="secondary" href="/courses">
                 Browse courses
-              </Button>
+              </ProtectedHrefButton>
             </div>
           </div>
         </Card>

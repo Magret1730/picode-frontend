@@ -6,7 +6,7 @@ import { CodePlayground } from "@/components/playground/CodePlayground";
 import { getAssignment } from "@/lib/mock-data";
 import { Card } from "@/components/ui/Card";
 import { apiAssignment } from "@/lib/api/picode";
-import { RequireAuth } from "@/components/auth/RequireAuth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default async function AssignmentPage({
   params,
@@ -20,8 +20,8 @@ export default async function AssignmentPage({
   const offline = !apiRes.ok;
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <RequireAuth />
       <PageHeader
         title={assignment.title}
         eyebrow={<Badge tone="pink">Final assignment</Badge>}
@@ -62,6 +62,7 @@ export default async function AssignmentPage({
         />
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 
