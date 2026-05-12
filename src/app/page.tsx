@@ -1,71 +1,43 @@
+import { HeroPlaygroundComposition } from "@/components/landing/HeroPlaygroundComposition";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { ProgressBar } from "@/components/ui/ProgressBar";
 
 export default function Home() {
   return (
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,114,182,0.20),transparent_55%),radial-gradient(circle_at_80%_10%,rgba(79,140,255,0.22),transparent_55%),radial-gradient(circle_at_30%_90%,rgba(74,222,128,0.16),transparent_55%)]" />
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-            <div>
-              <Badge tone="yellow">Picode</Badge>
-              <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-                Where kids build the web.
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,color-mix(in_oklab,var(--brand-pink)_16%,transparent),transparent_58%),radial-gradient(circle_at_82%_14%,color-mix(in_oklab,var(--brand-blue)_18%,transparent),transparent_56%),radial-gradient(circle_at_32%_88%,color-mix(in_oklab,var(--brand-green)_12%,transparent),transparent_52%)]"
+          aria-hidden
+        />
+        <div className="relative mx-auto max-w-6xl px-4 py-14 sm:py-16 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
+            <div className="max-w-xl">
+              <Badge tone="yellow">Ages 8–14</Badge>
+              <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl sm:leading-[1.08]">
+                Coding for kids, made fun.
               </h1>
-              <p className="mt-4 text-lg text-[color:var(--text-2)]">
-                Bright lessons. Tiny steps. Big wins. Learn HTML and CSS by
-                building real webpages — and earn XP as you go.
+              <p className="mt-4 max-w-md text-lg leading-relaxed text-muted-foreground sm:text-xl sm:leading-relaxed">
+                Learn HTML and CSS with tiny lessons, friendly practice, and
+                instant feedback.
               </p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button href="/register">Start learning</Button>
-                <Button variant="secondary" href="/courses">
-                  Preview courses
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Button className="w-full sm:w-auto sm:min-w-[11rem]" href="/register">
+                  Start learning
                 </Button>
-                <Button variant="ghost" href="/login">
-                  Log in
+                <Button
+                  className="w-full sm:w-auto sm:min-w-[11rem]"
+                  variant="secondary"
+                  href="/courses"
+                >
+                  Explore courses
                 </Button>
               </div>
             </div>
 
-            <Card className="relative overflow-hidden">
-              <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[color:var(--brand-yellow)] blur-2xl opacity-50" />
-              <div className="absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-[color:var(--brand-blue)] blur-2xl opacity-40" />
-
-              <div className="relative">
-                <Badge tone="mint">Today’s mini-mission</Badge>
-                <h2 className="mt-3 text-xl font-extrabold">
-                  Build a mini profile page
-                </h2>
-                <p className="mt-2 text-[color:var(--text-2)]">
-                  Add a title, your name, a picture, and a link.
-                </p>
-                <div className="mt-5 rounded-xl border border-zinc-200 bg-zinc-50 p-4 font-mono text-sm text-zinc-800">
-                  {
-                    "<h1>Your Name</h1>\n<p>About me…</p>\n<img alt=\"Me\" />\n<a href=\"https://…\">My site</a>"
-                  }
-                </div>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:items-center">
-                  <div>
-                    <p className="text-sm font-semibold text-[color:var(--text-2)]">
-                      Earn:{" "}
-                      <span className="text-[color:var(--brand-pink)]">
-                        +10 XP
-                      </span>
-                    </p>
-                    <div className="mt-3">
-                      <ProgressBar value={20} label="Level progress" />
-                    </div>
-                  </div>
-                  <div className="flex gap-2 sm:justify-end">
-                    <Button href="/dashboard">Dashboard</Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <HeroPlaygroundComposition />
           </div>
         </div>
       </section>
@@ -158,7 +130,6 @@ export default function Home() {
 
       {/* Age groups */}
       <section className="mx-auto max-w-6xl px-4 py-14">
-        <Badge tone="pink">Age groups</Badge>
         <h2 className="mt-3 text-3xl font-extrabold">Pick your path</h2>
         <p className="mt-2 text-[color:var(--text-2)]">
           Same skills, different vibes — choose what feels right.
@@ -167,21 +138,18 @@ export default function Home() {
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           <Card className="border-[color:var(--picode-yellow)]/40">
             <h3 className="text-xl font-extrabold">Junior</h3>
-            <p className="mt-1 text-sm text-[color:var(--text-2)]">Ages 8–10</p>
             <p className="mt-3 text-sm text-[color:var(--text-2)]">
               Short missions and big high-fives. Perfect for first-time coders.
             </p>
           </Card>
           <Card className="border-[color:var(--picode-mint)]/45">
             <h3 className="text-xl font-extrabold">Builder</h3>
-            <p className="mt-1 text-sm text-[color:var(--text-2)]">Ages 11–12</p>
             <p className="mt-3 text-sm text-[color:var(--text-2)]">
               Build cool pages with more choices and creative challenges.
             </p>
           </Card>
           <Card className="border-[color:var(--picode-blue)]/40">
             <h3 className="text-xl font-extrabold">Creator</h3>
-            <p className="mt-1 text-sm text-[color:var(--text-2)]">Ages 13–14</p>
             <p className="mt-3 text-sm text-[color:var(--text-2)]">
               Level up with bigger projects and stronger design skills.
             </p>
